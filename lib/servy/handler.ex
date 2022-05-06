@@ -15,11 +15,18 @@ defmodule Servy.Handler do
   end
 
   @doc """
-  Start the parse function doc here
+  The function parse get the request, extract the first line,
+  split the first line with empty space and complete the map
+  with informations about request
   """
-  def parse(_request) do
-    # TODO: Parse the request string into map
-    %{method: "GET", path: "/wildthings", response_body: ""}
+  def parse(request) do
+    [method, path, _version] =
+      request
+      |> String.split("\n")
+      |> List.first()
+      |> String.split(" ")
+
+    %{method: method, path: path, response_body: ""}
   end
 
   @doc """
