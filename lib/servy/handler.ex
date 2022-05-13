@@ -30,11 +30,10 @@ defmodule Servy.Handler do
   end
 
   @doc """
-  Start the route function doc here
+  This function gets the conversation and adds response_body content to the conversation map.
   """
-  def route(_conversation) do
-    # TODO: Create a new map that also has the response body:
-    %{method: "GET", path: "/wildthings", response_body: "Bears, Lions, Tigers"}
+  def route(conversation) do
+    %{conversation | response_body: "Bears, Lions, Tigers"}
   end
 
   @doc """
