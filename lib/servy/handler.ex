@@ -37,15 +37,15 @@ defmodule Servy.Handler do
   end
 
   @doc """
-  Start the format_response function doc here
+  This function gest the conversation and format de response with HTTP response string
   """
-  def format_response(_conversation) do
-    # TODO: Use the values in the map to create an HTTP response string
+  def format_response(conversation) do
     """
     HTTP/1.1 200 OK
     Content-Type: text/html
-    Content-Length: 20
+    Content-Length: #{String.length(conversation.response_body)}
 
+    #{conversation.response_body}
     Bears, Lions, Tigers
     """
   end
