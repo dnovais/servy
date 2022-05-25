@@ -10,9 +10,15 @@ defmodule Servy.Handler do
   def handle(request) do
     request
     |> parse()
+    |> log()
     |> route()
     |> format_response()
   end
+
+  @doc """
+  The function show a log of request
+  """
+  def log(request), do: IO.inspect(request)
 
   @doc """
   The function parse get the request, extract the first line,
