@@ -32,14 +32,35 @@ defmodule Servy.Handler do
       |> List.first()
       |> String.split(" ")
 
-    %{method: method, path: path, response_body: ""}
+    %{
+      method: method,
+      path: path,
+      response_body: "",
+      status: nil
+    }
   end
 
   @doc """
   This function gets the conversation and adds response_body content to the conversation map.
   """
   def route(conversation) do
-    %{conversation | response_body: "Bears, Lions, Tigers"}
+    route(conversation, conversation.method, conversation.path)
+  end
+
+  def route(conversation, "GET", "/wildthings") do
+    %{conversation | status: 200, response_body: "Bears, Lions, Tigers"}
+  end
+
+  def route(conversation, "GET", "/bears") do
+    %{conversation | status: 200, response_body: "Teddy, Smokey, Paddington"}
+  end
+
+  def route(conversation, "GET", "/bears/" <> id) do
+    %{conversation | status: 200, response_body: "Bear #{id}"}
+  end
+
+  def route(conversation, _method, path) do
+    %{conversation | status: 404, response_body: "No #{path} here!"}
   end
 
   @doc """
@@ -47,13 +68,23 @@ defmodule Servy.Handler do
   """
   def format_response(conversation) do
     """
-    HTTP/1.1 200 OK
+    HTTP/1.1 #{conversation.status} #{status_reason(conversation.status)}
     Content-Type: text/html
     Content-Length: #{String.length(conversation.response_body)}
 
     #{conversation.response_body}
-    Bears, Lions, Tigers
     """
+  end
+
+  defp status_reason(code) do
+    %{
+      200 => "OK",
+      201 => "Created",
+      401 => "Unauthorized",
+      403 => "Forbidden",
+      404 => "Not Found",
+      500 => "Internal Error"
+    }[code]
   end
 end
 
@@ -67,7 +98,7 @@ end
 # after a break line
 # An optional body, that we can put the form params from a post request for example
 request = """
-GET /wildthings HTTP/1.1
+GET /bears/1 HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
