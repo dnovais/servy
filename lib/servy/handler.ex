@@ -9,10 +9,10 @@ defmodule Servy.Handler do
   """
   def handle(request) do
     request
-    |> parse()
-    |> log()
-    |> route()
-    |> format_response()
+    |> parse
+    |> log
+    |> route
+    |> format_response
   end
 
   @doc """
@@ -59,6 +59,10 @@ defmodule Servy.Handler do
     %{conversation | status: 200, response_body: "Bear #{id}"}
   end
 
+  def route(conversation, "DELETE", "/bears/" <> _id) do
+    %{conversation | status: 403, response_body: "Deleting a bear..."}
+  end
+
   def route(conversation, _method, path) do
     %{conversation | status: 404, response_body: "No #{path} here!"}
   end
@@ -98,7 +102,7 @@ end
 # after a break line
 # An optional body, that we can put the form params from a post request for example
 request = """
-GET /bears/1 HTTP/1.1
+DELETE /bears/1 HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
